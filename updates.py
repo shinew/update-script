@@ -62,8 +62,7 @@ def python_update(platform):
         else:
             name = match.group(1)
             print 'Updating package: %s' % (name,)
-            output = subprocess.check_call(
-                ['sudo', platform, 'install', '-U', name])
+            output = subprocess.check_call([platform, 'install', '-U', name])
 
 
 def run_all_updaters():
