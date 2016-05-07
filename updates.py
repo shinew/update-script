@@ -39,14 +39,13 @@ def register_updater(name):
 
 @register_updater('brew')
 def brew_update():
-    subprocess.check_call(['brew', 'update'])
-    subprocess.check_call(['brew', 'upgrade'])
+    subprocess.check_call('brew update'.split())
+    subprocess.check_call('brew upgrade'.split())
 
 
 @register_updater('vim')
 def vim_update():
-    subprocess.check_call(
-        ['vim', '-i', 'NONE', '-c', 'PluginUpdate', '-c', 'quitall'])
+    subprocess.check_call('vim -i NONE -c PluginUpdate -c quitall'.split())
 
 
 @register_updater('python')
