@@ -7,7 +7,7 @@ def call(cmd):
     subprocess.check_call(cmd.split())
 
 def call_with_output(cmd):
-    subprocess.check_output(cmd.split())
+    return subprocess.check_output(cmd.split())
 
 def update_brew():
     call('brew update')
