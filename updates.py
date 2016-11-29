@@ -1,13 +1,13 @@
-from re import compile
-from subprocess import check_call, check_output
+import re
+import subprocess
 
-PYTHON_REGEX = compile(r'^([\w\.\-]+) \(')
+PYTHON_REGEX = re.compile(r'^([\w\.\-]+) \(')
 
 def call(cmd):
-    check_call(cmd.split())
+    subprocess.check_call(cmd.split())
 
 def call_with_output(cmd):
-    return check_output(cmd.split())
+    subprocess.check_output(cmd.split())
 
 def update_brew():
     call('brew update')
