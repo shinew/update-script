@@ -1,81 +1,72 @@
-import re
-import subprocess
+from re import compile
+from subprocess import check_call, check_output
 
+PYTHON_REGEX = compile(r'^([\w\.\-]+) \(')
 
-config = {
-    'brew': [],
-    'vim': [],
-    'python': ['pip2', 'pip3'],
-}
+def call(cmd):
+    check_call(cmd.split())
 
+def call_with_output(cmd):
+    return check_output(cmd.split())
 
-_name_to_fn = {}
+def update_brew():
+    call('brew update')
+    call('brew upgrade')
 
+def update_vim():
+    call('vim -i NONE -c PlugUpdate -c quitall')
 
-def register_updater(name):
-    '''Registers an update function.
+def update_node():
+    call('npm update -g')
 
-    Pass in the config key as `name`. If there are any config arguments, the
-    registered function will be called once for each argument. Else, it will be
-    called once without any arguments.
+def update_python(platform):
 
-    '''
-    assert name not in _name_to_fn, 'already added %s' % (name,)
-    assert name in config, '%s not in config' % (name,)
+    def update_package(package):
+        print 'Updating package: {}'.format(name)
+        call_with_output('{} install -U {}'.format(platform, name))
 
-    breaks = '--------------------'
-
-    def g(f):
-        def h(*args):
-            if args:
-                print '%s updating %s:%s %s' % (breaks, name, args[0], breaks)
-            else:
-                print '%s updating %s %s' % (breaks, name, breaks)
-            f(*args)
-        _name_to_fn[name] = h
-        return h
-    return g
-
-
-@register_updater('brew')
-def brew_update():
-    subprocess.check_call('brew update'.split())
-    subprocess.check_call('brew upgrade'.split())
-
-
-@register_updater('vim')
-def vim_update():
-    subprocess.check_call('vim -i NONE -c PluginUpdate -c quitall'.split())
-
-
-@register_updater('python')
-def python_update(platform):
-    lines = subprocess.check_output(
-        [platform, 'list', '--outdated']).split('\n')
-    for line in lines:
-        if line.strip() == '':
-            continue
-        match = re.match(r'^([\w\.\-]+) \(', line)
+    def parse_line(line):
+        if '' == line.strip():
+            return
+        match = PYTHON_REGEX.match(line)
         if match is None:
-            print 'Could not find package: %s' % (line,)
+            print 'Could not find package: {}'.format(line)
         else:
             name = match.group(1)
-            print 'Updating package: %s' % (name,)
-            output = subprocess.check_call([platform, 'install', '-U', name])
+            update_package(name)
 
+    assert platform in ['pip2', 'pip3']
+    map(parse_line,
+        call_with_output('{} list --outdated --format=legacy'.format(platform))
+            .splitlines())
+
+def update_ocaml():
+    call('opam update')
+    call('opam upgrade')
 
 def run_all_updaters():
-    for name in config:
-        assert name in _name_to_fn, '%s is not registered' % (name,)
-        if len(config[name]) == 0:
-            _name_to_fn[name]()
+
+    def call_update(name, update):
+        print '--------------------'
+        print 'Updating {}'.format(name)
+        update()
+
+    def call_updater(entry):
+        name, update, args = entry
+        if args is None:
+            call_update(name, update)
         else:
-            for args in config[name]:
-                if type(args) is str:  # because strings are iterable
-                    _name_to_fn[name](args)
-                else:
-                    _name_to_fn[name](*args)
+            map(lambda arg: call_update('{}:{}'.format(name, arg), lambda: update(arg)),
+                args)
 
+    updaters = [
+        ('brew', update_brew, None),
+        ('python', update_python, ('pip2', 'pip3')),
+        ('node', update_node, None),
+        ('ocaml', update_ocaml, None),
+        ('vim', update_vim, None),
+    ]
+    map(call_updater, updaters)
 
-if __name__ == '__main__':
+if '__main__' == __name__:
     run_all_updaters()
