@@ -22,8 +22,8 @@ def update_node():
 def update_python(platform):
 
     def update_package(package):
-        print 'Updating package: {}'.format(name)
-        call_with_output('{} install -U {}'.format(platform, name))
+        print 'Updating package: {}'.format(package)
+        call_with_output('{} install -U {}'.format(platform, package))
 
     def parse_line(line):
         if '' == line.strip():
