@@ -13,8 +13,8 @@ def update_brew():
     call('brew update')
     call('brew upgrade')
 
-def update_vim(plugin_manager):
-    call('vim -i NONE -c {} -c quitall'.format(plugin_manager))
+def update_vim():
+    call('vim -i NONE -c PlugUpgrade -c PlugUpdate -c quitall')
 
 def update_node():
     call('npm update -g')
@@ -56,16 +56,14 @@ def run_all_updaters():
         if args is None:
             call_update(name, update)
         else:
-            map(lambda (arg_name, arg): \
-                    call_update('{}:{}'.format(name, arg_name), lambda: update(arg)),
-                args)
+            map(lambda (arg_name, arg): call_update(arg_name, lambda: update(arg)), args)
 
     updaters = [
         ('brew', update_brew, None),
-        ('python', update_python, (('2', 'pip2'), ('3', 'pip3'))),
+        ('python', update_python, [('python2', 'pip2'), ('python3', 'pip3')]),
         ('node', update_node, None),
         ('ocaml', update_ocaml, None),
-        ('vim', update_vim, (('vim-plug', 'PlugUpdate'),)),
+        ('vim', update_vim, None),
     ]
     map(call_updater, updaters)
 
