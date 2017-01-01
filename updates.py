@@ -1,23 +1,31 @@
 import re
 import subprocess
 
+
 PYTHON_REGEX = re.compile(r'^([\w\.\-]+) \(')
+
 
 def call(cmd):
     subprocess.check_call(cmd.split())
 
+
 def call_with_output(cmd):
     return subprocess.check_output(cmd.split())
+
 
 def update_brew():
     call('brew update')
     call('brew upgrade')
+    call('brew cleanup')
+
 
 def update_vim():
     call('vim -i NONE -c PlugUpgrade -c PlugUpdate -c quitall')
 
+
 def update_node():
     call('npm update -g')
+
 
 def update_python(platform):
 
@@ -40,9 +48,11 @@ def update_python(platform):
         call_with_output('{} list --outdated --format=legacy'.format(platform))
             .splitlines())
 
+
 def update_ocaml():
     call('opam update')
     call('opam upgrade')
+
 
 def run_all_updaters():
 
@@ -66,6 +76,7 @@ def run_all_updaters():
         ('vim', update_vim, None),
     ]
     map(call_updater, updaters)
+
 
 if '__main__' == __name__:
     run_all_updaters()
