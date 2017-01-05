@@ -71,11 +71,12 @@ def run_all_updaters():
             call_update(name, update)
         elif len(entry) == 3:
             name, update, args = entry
-            map(lambda (arg_name, arg): call_update(arg_name, lambda: update(arg)), args)
+            call_update(name, lambda: update(*args))
 
     updaters = [
         ('brew', update_brew),
-        ('python', update_python, [('python2', 'pip2'), ('python3', 'pip3')]),
+        ('python2', update_python, ('pip2',)),
+        ('python3', update_python, ('pip3',)),
         ('node', update_node),
         ('ocaml', update_ocaml),
         ('rust', update_rust),
