@@ -6,11 +6,11 @@ PYTHON_REGEX = re.compile(r'^([\w\.\-]+) \(')
 
 
 def call(cmd):
-    subprocess.check_call(cmd.split())
+    subprocess.check_call(cmd)
 
 
 def call_with_output(cmd):
-    return subprocess.check_output(cmd.split())
+    return subprocess.check_output(cmd)
 
 
 def update_brew():
@@ -51,7 +51,11 @@ def update_python(platform):
 
 def update_ocaml():
     call('opam update')
-    call('opam upgrade')
+    call('opam upgrade --yes')
+
+
+def update_rust():
+	call('rustup update')
 
 
 def run_all_updaters():
@@ -73,6 +77,7 @@ def run_all_updaters():
         ('python', update_python, [('python2', 'pip2'), ('python3', 'pip3')]),
         ('node', update_node, None),
         ('ocaml', update_ocaml, None),
+        ('rust', update_rust, None),
         ('vim', update_vim, None),
     ]
     map(call_updater, updaters)
