@@ -6,11 +6,11 @@ PYTHON_REGEX = re.compile(r'^([\w\.\-]+) \(')
 
 
 def call(cmd):
-    subprocess.check_call(cmd)
+    subprocess.check_call(cmd.split())
 
 
 def call_with_output(cmd):
-    return subprocess.check_output(cmd)
+    return subprocess.check_output(cmd.split())
 
 
 def update_brew():
@@ -66,19 +66,20 @@ def run_all_updaters():
         update()
 
     def call_updater(entry):
-        name, update, args = entry
-        if args is None:
+        if len(entry) == 2:
+            name, update = entry
             call_update(name, update)
-        else:
+        elif len(entry) == 3:
+            name, update, args = entry
             map(lambda (arg_name, arg): call_update(arg_name, lambda: update(arg)), args)
 
     updaters = [
-        ('brew', update_brew, None),
+        ('brew', update_brew),
         ('python', update_python, [('python2', 'pip2'), ('python3', 'pip3')]),
-        ('node', update_node, None),
-        ('ocaml', update_ocaml, None),
-        ('rust', update_rust, None),
-        ('vim', update_vim, None),
+        ('node', update_node),
+        ('ocaml', update_ocaml),
+        ('rust', update_rust),
+        ('vim', update_vim),
     ]
     map(call_updater, updaters)
 
