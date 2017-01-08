@@ -31,7 +31,7 @@ def update_python(platform):
 
     def update_package(package):
         print 'Updating package: {}'.format(package)
-        call_with_output('{} install -U {}'.format(platform, package))
+        call_with_output('{} --no-cache-dir install -U {}'.format(platform, package))
 
     def parse_line(line):
         if '' == line.strip():
@@ -45,7 +45,7 @@ def update_python(platform):
 
     assert platform in ['pip2', 'pip3']
     map(parse_line,
-        call_with_output('{} list --outdated --format=legacy'.format(platform))
+        call_with_output('{} list --no-cache-dir --outdated --format=legacy'.format(platform))
             .splitlines())
 
 
