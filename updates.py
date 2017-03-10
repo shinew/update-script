@@ -27,6 +27,10 @@ def update_node():
     call('npm update -g')
 
 
+def update_yarn():
+    call('yarn global upgrade')
+
+
 def update_python(platform):
 
     def update_package(package):
@@ -56,6 +60,7 @@ def update_ocaml():
 
 def update_rust():
 	call('rustup update')
+	call('cargo install-update -a')
 
 
 def run_all_updaters():
@@ -78,6 +83,7 @@ def run_all_updaters():
         ('python2', update_python, ('pip2',)),
         ('python3', update_python, ('pip3',)),
         ('node', update_node),
+        ('yarn', update_yarn),
         ('ocaml', update_ocaml),
         ('rust', update_rust),
         ('vim', update_vim),
