@@ -31,6 +31,10 @@ def update_yarn():
     call('yarn global upgrade')
 
 
+def update_haskell():
+    call('cabal update')
+
+
 def update_python(platform):
 
     def update_package(package):
@@ -63,6 +67,10 @@ def update_rust():
 	call('cargo install-update -a')
 
 
+def update_shell():
+  call('upgrade_oh_my_zsh')
+
+
 def run_all_updaters():
 
     def call_update(name, update):
@@ -87,6 +95,8 @@ def run_all_updaters():
         ('ocaml', update_ocaml),
         ('rust', update_rust),
         ('vim', update_vim),
+        ('haskell', update_haskell),
+        ('shell', update_shell),
     ]
     map(call_updater, updaters)
 
