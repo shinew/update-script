@@ -67,10 +67,6 @@ def update_rust():
 	call('cargo install-update -a')
 
 
-def update_shell():
-  call('upgrade_oh_my_zsh')
-
-
 def run_all_updaters():
 
     def call_update(name, update):
@@ -96,7 +92,6 @@ def run_all_updaters():
         ('rust', update_rust),
         ('vim', update_vim),
         ('haskell', update_haskell),
-        ('shell', update_shell),
     ]
     map(call_updater, updaters)
 
