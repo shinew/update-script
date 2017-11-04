@@ -87,7 +87,7 @@ def run_all_updaters():
         ('python2', update_python, ('pip2',)),
         ('python3', update_python, ('pip3',)),
         ('node', update_node),
-        ('yarn', update_yarn),
+        #('yarn', update_yarn),
         ('ocaml', update_ocaml),
         ('rust', update_rust),
         ('vim', update_vim),
